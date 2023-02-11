@@ -27,4 +27,28 @@
     <extensions defaultExtensionNs="com.intellij">
 
     </extensions>
+
+    <applicationListeners>
+        <listener class="com.example.theepicsplit.listeners.FileTypeOpenedListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </applicationListeners>
+
+    <actions>
+        <action id="com.example.theepicsplit.ui.PopupDialogAction" class="com.example.theepicsplit.ui.PopupDialogAction"
+                text="EXAMPLE" description="exampl1">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+
+        <group
+                id="com.example.theepicsplit.ui.TheEpicSplitActionGroup"
+                class="com.example.theepicsplit.ui.TheEpicSplitActionGroup"
+                text="The Epic Split"
+                popup="true"
+        >
+            <add-to-group
+                    group-id="ToolsMenu"
+                    anchor="last"
+            />
+        </group>
+    </actions>
 </idea-plugin>
