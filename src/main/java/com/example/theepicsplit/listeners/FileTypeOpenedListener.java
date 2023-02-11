@@ -9,32 +9,22 @@ import com.intellij.openapi.project.ProjectLocator;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public class FileTypeOpenedListener implements FileEditorManagerListener {
+public class FileTypeOpenedListener implements FileEditorManagerListener, FileEditorManagerListener.Before {
     private static final String JEST_TEST_FILE_PATTERN = ".*.spec.*";
-    private static final ArrayList<VirtualFile> filesToDelete = new ArrayList<>();
-    private static boolean isSorting = false;
+    private static final int DEFAULT_TAB_INDEX = 0;
+    private static final int JEST_TAB_INDEX = 1;
 
     @Override
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile openedFile) {
-        FileEditorManagerListener.super.fileOpened(source, openedFile);
-
-        if (!FileTypeOpenedListener.isSorting) {
-            FileTypeOpenedListener.isSorting = true;
-            this._tryReorganizeTabGroups(openedFile);
-            FileTypeOpenedListener.isSorting = false;
-        }
+        this._tryMoveFileToTabGroup(openedFile);
     }
 
-    private void _tryReorganizeTabGroups(VirtualFile openedFile) {
+    private void _tryMoveFileToTabGroup(VirtualFile openedFile) {
         FileEditorManagerEx fileEditorManager = this._getFileEditorManager(openedFile);
-        boolean filesAreSorted = this._areFilesSorted(fileEditorManager);
+        boolean twoTabsAreOpen = fileEditorManager.getWindows().length == 2;
 
-        if (!filesAreSorted) {
-            this._sortFiles(openedFile);
+        if (twoTabsAreOpen) {
+            this._moveFileToTargetTabsGroup(openedFile);
         }
     }
 
@@ -44,69 +34,21 @@ public class FileTypeOpenedListener implements FileEditorManagerListener {
         return FileEditorManagerEx.getInstanceEx(currentProject);
     }
 
-    private boolean _areFilesSorted(FileEditorManagerEx fileEditorManager) {
+    private void _moveFileToTargetTabsGroup(VirtualFile file) {
+        FileEditorManagerEx fileEditorManager = this._getFileEditorManager(file);
         EditorWindow[] windowPanes = fileEditorManager.getWindows();
+        int targetWindowPaneIndex = this._isFileJestTest(file) ? JEST_TAB_INDEX : DEFAULT_TAB_INDEX;
+        EditorWindow initialWindowPane = fileEditorManager.getCurrentWindow();
+        EditorWindow targetWindowPane = windowPanes[targetWindowPaneIndex];
 
-        if (windowPanes.length < 2) {
-            return true;
+        fileEditorManager.openFileWithProviders(file, true, targetWindowPane);
+
+        if (initialWindowPane != targetWindowPane && initialWindowPane.isFileOpen(file)) {
+            initialWindowPane.closeFile(file, true, true);
         }
-
-        return this._areTabGroupsSorted(windowPanes);
-    }
-
-    private boolean _areTabGroupsSorted(EditorWindow[] windowPanes) {
-        VirtualFile[] firstWindowFiles = windowPanes[0].getFiles();
-        VirtualFile[] secondWindowFiles = windowPanes[1].getFiles();
-        boolean firstWindowIsSorted = Arrays.stream(firstWindowFiles).noneMatch(this::_isFileJestTest);
-        boolean secondWindowIsSorted = Arrays.stream(secondWindowFiles).allMatch(this::_isFileJestTest);
-
-        return firstWindowIsSorted && secondWindowIsSorted;
     }
 
     private boolean _isFileJestTest(VirtualFile file) {
         return file.getName().matches(JEST_TEST_FILE_PATTERN);
-    }
-
-    private void _sortFiles(VirtualFile newlyOpenedFile) {
-        System.out.println("reorganizing tab groups");
-        FileEditorManagerEx fileEditorManager = this._getFileEditorManager(newlyOpenedFile);
-        VirtualFile[] openFiles = fileEditorManager.getOpenFiles();
-
-        for (VirtualFile openedFile : openFiles) {
-            fileEditorManager.closeFile(openedFile);
-            this._openFileInProperTabGroup(openedFile);
-        }
-
-        System.out.println("closing files");
-        FileTypeOpenedListener.filesToDelete.forEach(this::_tryCloseFile);
-        FileTypeOpenedListener.filesToDelete.clear();
-    }
-
-    private void _openFileInProperTabGroup(VirtualFile file) {
-        System.out.println("opening file in proper tab group");
-        FileEditorManagerEx fileEditorManager = this._getFileEditorManager(file);
-        EditorWindow[] windowPanes = fileEditorManager.getWindows();
-
-        if (file.getName().matches(JEST_TEST_FILE_PATTERN)) {
-            if (windowPanes.length == 2) {
-                fileEditorManager.openFileWithProviders(file, false, windowPanes[1]);
-            } else {
-                fileEditorManager.createSplitter(SwingConstants.VERTICAL, windowPanes[0]);
-                VirtualFile activeFile = fileEditorManager.getCurrentFile();
-                FileTypeOpenedListener.filesToDelete.add(activeFile);
-                fileEditorManager.openFileWithProviders(file, false, windowPanes[1]);
-            }
-        } else {
-            fileEditorManager.openFileWithProviders(file, false, windowPanes[0]);
-        }
-    }
-
-    private void _tryCloseFile(VirtualFile file) {
-        FileEditorManagerEx fileEditorManager = this._getFileEditorManager(file);
-        boolean fileIsOpen = fileEditorManager.isFileOpen(file);
-
-        if (fileIsOpen) {
-            fileEditorManager.closeFile(file);
-        }
     }
 }
