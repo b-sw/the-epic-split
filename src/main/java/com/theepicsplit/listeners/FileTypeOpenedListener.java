@@ -1,4 +1,4 @@
-package com.example.theepicsplit.listeners;
+package com.theepicsplit.listeners;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
