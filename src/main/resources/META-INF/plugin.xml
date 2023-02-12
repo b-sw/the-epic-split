@@ -34,21 +34,6 @@
     </applicationListeners>
 
     <actions>
-        <group
-                id="com.example.theepicsplit.actionGroups.TheEpicSplitActionGroup"
-                class="com.example.theepicsplit.actionGroups.TheEpicSplitActionGroup"
-                text="The Epic Split"
-                popup="true"
-        >
-            <add-to-group
-                    group-id="ToolsMenu"
-                    anchor="last"
-            />
-            <action
-                    id="com.example.theepicsplit.actions.PopupDialogAction"
-                    class="com.example.theepicsplit.actions.PopupDialogAction"
-                    text="EXAMPLE" description="exampl1">
-            </action>
-        </group>
+
     </actions>
 </idea-plugin>
