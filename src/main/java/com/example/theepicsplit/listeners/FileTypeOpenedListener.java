@@ -1,5 +1,6 @@
 package com.example.theepicsplit.listeners;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
@@ -9,7 +10,8 @@ import com.intellij.openapi.project.ProjectLocator;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
-public class FileTypeOpenedListener implements FileEditorManagerListener, FileEditorManagerListener.Before {
+
+public class FileTypeOpenedListener implements FileEditorManagerListener {
     private static final String JEST_TEST_FILE_PATTERN = ".*.spec.*";
     private static final int DEFAULT_TAB_INDEX = 0;
     private static final int JEST_TAB_INDEX = 1;
@@ -24,7 +26,7 @@ public class FileTypeOpenedListener implements FileEditorManagerListener, FileEd
         boolean twoTabsAreOpen = fileEditorManager.getWindows().length == 2;
 
         if (twoTabsAreOpen) {
-            this._moveFileToTargetTabsGroup(openedFile);
+            this._moveFileToTargetTabGroup(openedFile);
         }
     }
 
@@ -34,7 +36,7 @@ public class FileTypeOpenedListener implements FileEditorManagerListener, FileEd
         return FileEditorManagerEx.getInstanceEx(currentProject);
     }
 
-    private void _moveFileToTargetTabsGroup(VirtualFile file) {
+    private void _moveFileToTargetTabGroup(VirtualFile file) {
         FileEditorManagerEx fileEditorManager = this._getFileEditorManager(file);
         EditorWindow[] windowPanes = fileEditorManager.getWindows();
         int targetWindowPaneIndex = this._isFileJestTest(file) ? JEST_TAB_INDEX : DEFAULT_TAB_INDEX;
@@ -42,10 +44,25 @@ public class FileTypeOpenedListener implements FileEditorManagerListener, FileEd
         EditorWindow targetWindowPane = windowPanes[targetWindowPaneIndex];
 
         fileEditorManager.openFileWithProviders(file, true, targetWindowPane);
+        this._tryCloseFileInWrongTabGroup(file, initialWindowPane, targetWindowPane);
+    }
 
-        if (initialWindowPane != targetWindowPane && initialWindowPane.isFileOpen(file)) {
-            initialWindowPane.closeFile(file, true, true);
+    private void _tryCloseFileInWrongTabGroup(VirtualFile file, EditorWindow initialWindowPane, EditorWindow targetWindowPane) {
+        if (initialWindowPane == targetWindowPane) {
+            return;
         }
+
+        if (!initialWindowPane.isFileOpen(file)) {
+            return;
+        }
+
+        this._closeFileInTabGroup(file, initialWindowPane);
+    }
+
+    private void _closeFileInTabGroup(VirtualFile file, EditorWindow tabGroup) {
+        Runnable closeFile = () -> tabGroup.closeFile(file, true, true);
+
+        ApplicationManager.getApplication().invokeLater(closeFile);
     }
 
     private boolean _isFileJestTest(VirtualFile file) {
