@@ -1,12 +1,66 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M32.0845 7.94025V4H24.0203V7.9896H16.029V4H7.91553V7.94025H4V36H16.0044V32.0045C16.0058 30.9457 16.4274 29.9308 17.1766 29.1826C17.9258 28.4345 18.9412 28.0143 20 28.0143C21.0588 28.0143 22.0743 28.4345 22.8234 29.1826C23.5726 29.9308 23.9942 30.9457 23.9956 32.0045V36H36V7.94025H32.0845Z"
-          fill="url(#paint0_linear)"/>
-    <defs>
-        <linearGradient id="paint0_linear" x1="2.94192" y1="4.89955" x2="37.7772" y2="39.7345"
-                        gradientUnits="userSpaceOnUse">
-            <stop offset="0.15937" stop-color="#3BEA62"/>
-            <stop offset="0.5404" stop-color="#3C99CC"/>
-            <stop offset="0.93739" stop-color="#6B57FF"/>
-        </linearGradient>
-    </defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 400 400">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f2f2f1;
+      }
+
+      .cls-2 {
+        fill: #009600;
+      }
+
+      .cls-3 {
+        fill: red;
+      }
+
+      .cls-4 {
+        fill: #0c5aa0;
+      }
+
+      .cls-5 {
+        fill: #d66928;
+      }
+
+      .cls-6 {
+        fill: #c500c3;
+      }
+
+      .cls-7 {
+        fill: #1d3a80;
+      }
+    </style>
+  </defs>
+  <circle cx="199.75" cy="79.531" r="11.5"/>
+  <rect id="Rounded_Rectangle_1" data-name="Rounded Rectangle 1" x="176.75" y="91.031" width="46" height="33" rx="10" ry="10"/>
+  <rect id="Rounded_Rectangle_2" data-name="Rounded Rectangle 2" x="181.25" y="116.688" width="37" height="21" rx="10" ry="10"/>
+  <rect x="144.25" y="132.188" width="111" height="11"/>
+  <rect x="144.75" y="123.688" width="3" height="20"/>
+  <rect x="147.75" y="126.688" width="3" height="17"/>
+  <rect x="150.75" y="129.688" width="3" height="14"/>
+  <rect x="252.75" y="123.688" width="3" height="20"/>
+  <rect x="249.75" y="126.688" width="3" height="17"/>
+  <rect x="246.75" y="129.688" width="3" height="14"/>
+  <rect x="255.75" y="62" width="119" height="276"/>
+  <rect class="cls-1" x="258.75" y="64.688" width="113" height="270"/>
+  <rect x="25.75" y="62" width="119" height="276"/>
+  <rect class="cls-1" x="28.75" y="64.688" width="113" height="270"/>
+  <rect class="cls-2" x="265" y="77" width="100" height="10"/>
+  <rect class="cls-2" x="265" y="98" width="30" height="10"/>
+  <rect class="cls-2" x="265.25" y="118.438" width="70" height="10"/>
+  <rect class="cls-2" x="265" y="138.688" width="60" height="10"/>
+  <rect class="cls-3" x="265.25" y="180.031" width="75" height="10"/>
+  <rect class="cls-3" x="264.75" y="199.688" width="50" height="10"/>
+  <rect class="cls-3" x="265" y="220.219" width="85" height="10"/>
+  <rect class="cls-2" x="264.75" y="261.375" width="90" height="10"/>
+  <rect class="cls-2" x="264.75" y="282.188" width="45" height="10"/>
+  <rect class="cls-2" x="265" y="302.719" width="65" height="10"/>
+  <rect class="cls-4" x="35.25" y="77" width="75" height="10"/>
+  <rect class="cls-5" x="35.5" y="97.531" width="60" height="10"/>
+  <rect class="cls-4" x="35.5" y="118.438" width="50" height="10"/>
+  <rect class="cls-5" x="35.25" y="138.688" width="90" height="10"/>
+  <rect class="cls-6" x="35" y="199.688" width="55" height="10"/>
+  <rect class="cls-4" x="35.25" y="220.219" width="80" height="10"/>
+  <rect class="cls-7" x="35.25" y="241.125" width="90" height="10"/>
+  <rect class="cls-7" x="35" y="282.188" width="55" height="10"/>
+  <rect class="cls-5" x="35.25" y="302.719" width="75" height="10"/>
 </svg>
