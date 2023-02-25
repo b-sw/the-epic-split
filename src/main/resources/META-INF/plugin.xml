@@ -35,5 +35,9 @@
 
     <actions>
 
+        <action id="com.theepicsplit.ui.OpenConfigAction" class="com.theepicsplit.ui.OpenConfigAction"
+                text="The Epic Split">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
     </actions>
 </idea-plugin>

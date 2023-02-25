@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class FileTypeOpenedListener implements FileEditorManagerListener {
     private static final String JEST_TEST_FILE_PATTERN = ".*.spec.*";
     private static final int DEFAULT_TAB_INDEX = 0;
-    private static final int JEST_TAB_INDEX = 1;
+    private static final int FILTERED_TAB_INDEX = 1;
 
     @Override
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile openedFile) {
@@ -39,12 +39,16 @@ public class FileTypeOpenedListener implements FileEditorManagerListener {
     private void _moveFileToTargetTabGroup(VirtualFile file) {
         FileEditorManagerEx fileEditorManager = this._getFileEditorManager(file);
         EditorWindow[] windowPanes = fileEditorManager.getWindows();
-        int targetWindowPaneIndex = this._isFileJestTest(file) ? JEST_TAB_INDEX : DEFAULT_TAB_INDEX;
+        int targetWindowPaneIndex = this._isFileNameMatchingFilter(file) ? FILTERED_TAB_INDEX : DEFAULT_TAB_INDEX;
         EditorWindow initialWindowPane = fileEditorManager.getCurrentWindow();
         EditorWindow targetWindowPane = windowPanes[targetWindowPaneIndex];
 
         fileEditorManager.openFileWithProviders(file, true, targetWindowPane);
         this._tryCloseFileInWrongTabGroup(file, initialWindowPane, targetWindowPane);
+    }
+
+    private boolean _isFileNameMatchingFilter(VirtualFile file) {
+        return file.getName().matches(JEST_TEST_FILE_PATTERN);
     }
 
     private void _tryCloseFileInWrongTabGroup(VirtualFile file, EditorWindow initialWindowPane, EditorWindow targetWindowPane) {
@@ -63,9 +67,5 @@ public class FileTypeOpenedListener implements FileEditorManagerListener {
         Runnable closeFile = () -> tabGroup.closeFile(file, true, true);
 
         ApplicationManager.getApplication().invokeLater(closeFile);
-    }
-
-    private boolean _isFileJestTest(VirtualFile file) {
-        return file.getName().matches(JEST_TEST_FILE_PATTERN);
     }
 }
