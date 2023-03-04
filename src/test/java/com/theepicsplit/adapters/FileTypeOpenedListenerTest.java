@@ -19,7 +19,7 @@ public class FileTypeOpenedListenerTest extends FileEditorManagerTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		MessageBusConnection messageBusConnection = getProject().getMessageBus().connect();
-		messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileTypeOpenedListener(".*.spec.*"));
+		messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileTypeOpenedListener());
 	}
 
 	@After

@@ -1,10 +1,8 @@
 package com.theepicsplit.ui;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.theepicsplit.models.FilterState;
-import com.theepicsplit.models.FilterStateChangedNotifier;
-import com.theepicsplit.services.PersistsStateService;
+import com.theepicsplit.services.StateService;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -12,7 +10,6 @@ import java.awt.*;
 
 public class ConfigDialog extends DialogWrapper {
 	private static final String DIALOG_TITLE = "The Epic Split Config";
-	private final FilterStateChangedNotifier _filterStateChangedNotifier;
 	private final PluginOnOffSwitch _pluginOnOffSwitch = new PluginOnOffSwitch();
 	private final PatternField _patternField = new PatternField();
 
@@ -20,7 +17,6 @@ public class ConfigDialog extends DialogWrapper {
 		super(true);
 		super.init();
 
-		this._filterStateChangedNotifier = ApplicationManager.getApplication().getMessageBus().syncPublisher(FilterStateChangedNotifier.TOPIC);
 		setTitle(ConfigDialog.DIALOG_TITLE);
 	}
 
@@ -37,22 +33,24 @@ public class ConfigDialog extends DialogWrapper {
 	}
 
 	private void _setPanelElementsProps() {
+		System.out.println("Setting panel elements props" + " " + StateService.getInstance().getState().isFilterEnabled + " " + StateService.getInstance().getState().filterRegex);
 		this._setOnOffSwitchProps();
 		this._setPatternFieldProps();
 	}
 
 	private void _setOnOffSwitchProps() {
-		FilterState filterState = PersistsStateService.getInstance().getState();
+		FilterState filterState = StateService.getInstance().getState();
 
 		this._pluginOnOffSwitch.setSelected(filterState.isFilterEnabled);
 		this._pluginOnOffSwitch.addChangeListener(e -> this._patternField.setEnabled(this._pluginOnOffSwitch.isSelected()));
 	}
 
 	private void _setPatternFieldProps() {
-		FilterState filterState = PersistsStateService.getInstance().getState();
+		FilterState filterState = StateService.getInstance().getState();
 
-		this._patternField.setEnabled(this._pluginOnOffSwitch.isSelected());
+		System.out.println("Setting pattern field props" + " " + this._pluginOnOffSwitch.isSelected());
 		this._patternField.setText(filterState.filterRegex);
+		this._patternField.setEnabled(this._pluginOnOffSwitch.isSelected());
 	}
 
 	@Override
@@ -61,7 +59,7 @@ public class ConfigDialog extends DialogWrapper {
 		String pluginPattern = this._patternField.getText();
 		FilterState newFilterState = new FilterState(pluginIsEnabled, pluginPattern);
 
-		this._filterStateChangedNotifier.execute(newFilterState);
+		StateService.getInstance().loadState(newFilterState);
 		super.doOKAction();
 	}
 }

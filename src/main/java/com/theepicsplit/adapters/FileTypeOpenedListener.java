@@ -8,18 +8,13 @@ import com.intellij.openapi.fileEditor.impl.EditorWindow;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectLocator;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.theepicsplit.services.StateService;
 import org.jetbrains.annotations.NotNull;
 
 
 public class FileTypeOpenedListener implements FileEditorManagerListener {
 	private static final int DEFAULT_TAB_INDEX = 0;
 	private static final int FILTERED_TAB_INDEX = 1;
-
-	private final String _filterRegex;
-
-	public FileTypeOpenedListener(String filterRegex) {
-		this._filterRegex = filterRegex;
-	}
 
 	@Override
 	public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile openedFile) {
@@ -29,8 +24,10 @@ public class FileTypeOpenedListener implements FileEditorManagerListener {
 	private void _tryMoveFileToTabGroup(VirtualFile openedFile) {
 		FileEditorManagerEx fileEditorManager = this._getFileEditorManager(openedFile);
 		boolean twoTabsAreOpen = fileEditorManager.getWindows().length == 2;
+		boolean filterIsEnabled = StateService.getInstance().getState().isFilterEnabled;
+		boolean regexIsNotEmpty = !StateService.getInstance().getState().filterRegex.isEmpty();
 
-		if (twoTabsAreOpen) {
+		if (filterIsEnabled && twoTabsAreOpen && regexIsNotEmpty) {
 			this._moveFileToTargetTabGroup(openedFile);
 		}
 	}
@@ -53,8 +50,10 @@ public class FileTypeOpenedListener implements FileEditorManagerListener {
 	}
 
 	private boolean _isFileNameMatchingFilter(VirtualFile file) {
-		System.out.println("Regex: " + this._filterRegex + " file: " + file.getName() + " matches: " + file.getName().matches(this._filterRegex));
-		return file.getName().matches(this._filterRegex);
+		String filterRegex = StateService.getInstance().getState().filterRegex;
+		System.out.println("Regex: " + filterRegex + " file: " + file.getName() + " matches: " + file.getName().matches(filterRegex));
+
+		return file.getName().matches(filterRegex);
 	}
 
 	private void _tryCloseFileInWrongTabGroup(VirtualFile file, EditorWindow initialWindowPane, EditorWindow targetWindowPane) {

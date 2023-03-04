@@ -23,4 +23,8 @@ public class PatternField extends JPanel {
 	public void setText(String text) {
 		this._textField.setText(text);
 	}
+
+	public void setEnabled(boolean isEnabled) {
+		this._textField.setEnabled(isEnabled);
+	}
 }
