@@ -25,12 +25,13 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-
+        <applicationService
+                serviceImplementation="com.theepicsplit.services.PersistsStateService"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.theepicsplit.listeners.FileTypeOpenedListener"
-                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+        <!--        <listener class="com.theepicsplit.adapters.FileTypeOpenedListener"-->
+        <!--                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>-->
     </applicationListeners>
 
     <actions>
