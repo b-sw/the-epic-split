@@ -7,6 +7,8 @@ import com.intellij.openapi.fileEditor.impl.EditorWindow;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.testFramework.FileEditorManagerTestCase;
 import com.intellij.util.messages.MessageBusConnection;
+import com.theepicsplit.models.FilterState;
+import com.theepicsplit.services.StateService;
 import org.junit.After;
 import org.junit.Before;
 
@@ -20,6 +22,7 @@ public class FileTypeOpenedListenerTest extends FileEditorManagerTestCase {
 		super.setUp();
 		MessageBusConnection messageBusConnection = getProject().getMessageBus().connect();
 		messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileTypeOpenedListener());
+		StateService.getInstance().loadState(new FilterState(false, null));
 	}
 
 	@After
@@ -35,18 +38,20 @@ public class FileTypeOpenedListenerTest extends FileEditorManagerTestCase {
 
 	/* should open non-test file in one tab group */
 	public void testShouldOpenNonTestFileInOneTabGroup() {
-		this._shouldOpenFileInOneTabGroup(NON_TEST_FILE_NAME);
+		StateService.getInstance().loadState(new FilterState(true, ".*.spec.*"));
+		VirtualFile tsFile = super.myFixture.createFile(NON_TEST_FILE_NAME, FILE_CONTENT_STUB);
+
+		super.myFixture.openFileInEditor(tsFile);
+
+		assertEquals(1, this._getEditorWindows().length);
 	}
 
 	/* should open test file in one tab group */
 	public void testShouldOpenTestFileInOneTabGroup() {
-		this._shouldOpenFileInOneTabGroup(TEST_FILE_NAME);
-	}
+		StateService.getInstance().loadState(new FilterState(true, ".*.spec.*"));
+		VirtualFile tsSpecFile = super.myFixture.createFile(TEST_FILE_NAME, FILE_CONTENT_STUB);
 
-	private void _shouldOpenFileInOneTabGroup(String fileName) {
-		VirtualFile tsFile = super.myFixture.createFile(fileName, FILE_CONTENT_STUB);
-
-		super.myFixture.openFileInEditor(tsFile);
+		super.myFixture.openFileInEditor(tsSpecFile);
 
 		assertEquals(1, this._getEditorWindows().length);
 	}
@@ -56,6 +61,7 @@ public class FileTypeOpenedListenerTest extends FileEditorManagerTestCase {
 	public void testShouldOpenBothFilesInOneTabGroupForOneTabGroupOpen() {
 		VirtualFile nonTestFile = super.myFixture.createFile(NON_TEST_FILE_NAME, FILE_CONTENT_STUB);
 		VirtualFile testFile = super.myFixture.createFile(TEST_FILE_NAME, FILE_CONTENT_STUB);
+		StateService.getInstance().loadState(new FilterState(true, ".*.spec.*"));
 
 		super.myFixture.openFileInEditor(nonTestFile);
 		super.myFixture.openFileInEditor(testFile);
@@ -65,8 +71,9 @@ public class FileTypeOpenedListenerTest extends FileEditorManagerTestCase {
 
 	/* should open test file in correct tab for two tab groups open */
 	public void testShouldOpenTestFileInCorrectTabGroupForTwoTabGroupsOpen() {
-		VirtualFile newTestFile = super.myFixture.createFile("new-file-stub.spec.ts", FILE_CONTENT_STUB);
 		this._openInitialFilesInTwoTabGroups();
+		StateService.getInstance().loadState(new FilterState(true, ".*.spec.*"));
+		VirtualFile newTestFile = super.myFixture.createFile("new-file-stub.spec.ts", FILE_CONTENT_STUB);
 
 		super.myFixture.openFileInEditor(newTestFile);
 
@@ -77,8 +84,9 @@ public class FileTypeOpenedListenerTest extends FileEditorManagerTestCase {
 
 	/* should open non-test file in correct tab for two tab groups open */
 	public void testShouldOpenNonTestFileInCorrectTabGroupForTwoTabGroupsOpen() {
-		VirtualFile newNonTestFile = super.myFixture.createFile("new-file-stub.ts", FILE_CONTENT_STUB);
 		this._openInitialFilesInTwoTabGroups();
+		StateService.getInstance().loadState(new FilterState(true, ".*.spec.*"));
+		VirtualFile newNonTestFile = super.myFixture.createFile("new-file-stub.ts", FILE_CONTENT_STUB);
 
 		super.myFixture.openFileInEditor(newNonTestFile);
 

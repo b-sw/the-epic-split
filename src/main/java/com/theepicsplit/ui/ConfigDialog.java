@@ -33,7 +33,6 @@ public class ConfigDialog extends DialogWrapper {
 	}
 
 	private void _setPanelElementsProps() {
-		System.out.println("Setting panel elements props" + " " + StateService.getInstance().getState().isFilterEnabled + " " + StateService.getInstance().getState().filterRegex);
 		this._setOnOffSwitchProps();
 		this._setPatternFieldProps();
 	}
@@ -48,7 +47,6 @@ public class ConfigDialog extends DialogWrapper {
 	private void _setPatternFieldProps() {
 		FilterState filterState = StateService.getInstance().getState();
 
-		System.out.println("Setting pattern field props" + " " + this._pluginOnOffSwitch.isSelected());
 		this._patternField.setText(filterState.filterRegex);
 		this._patternField.setEnabled(this._pluginOnOffSwitch.isSelected());
 	}
