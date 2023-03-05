@@ -15,7 +15,7 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Given two tab groups are open, this plugin will always open a file with name matching <code>*.spec.*</code> in the <em>second</em> tab and any other file in the <em>first</em> tab (<em>first</em>, <em>second</em> chronologically).
+    Given two tab groups are open, this plugin will always open a file with name matching <code>regex</code> in the <em>second</em> tab and any other file in the <em>first</em> tab (<em>first</em>, <em>second</em> chronologically).
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.

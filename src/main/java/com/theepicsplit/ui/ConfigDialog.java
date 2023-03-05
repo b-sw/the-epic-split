@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class ConfigDialog extends DialogWrapper {
 	private static final String DIALOG_TITLE = "The Epic Split Config";
-	private final PluginOnOffSwitch _pluginOnOffSwitch = new PluginOnOffSwitch();
+	public final PluginOnOffSwitch _pluginOnOffSwitch = new PluginOnOffSwitch();
 	private final PatternField _patternField = new PatternField();
 
 	public ConfigDialog() {
